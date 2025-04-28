@@ -1,0 +1,4 @@
+langchain
+PyPdf2
+sentence-transformers
+chromadb
