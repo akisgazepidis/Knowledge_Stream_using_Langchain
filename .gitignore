@@ -1,5 +1,6 @@
-vector_store/
 __pycache__/
 *.py[cod]
 *$py.class
 files/**/*.pdf
+vector_store/**
+!vector_store/.gitkeep
