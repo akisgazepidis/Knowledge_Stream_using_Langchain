@@ -1,5 +1,5 @@
 from typing import List, Dict
-from langchain_community.text_splitter import RecursiveCharacterTextSplitter
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFLoader
 from sentence_transformers import SentenceTransformer
 from chromadb.config import Settings
@@ -57,35 +57,35 @@ def process_pdfs(directory: str) -> List[str]:
 def create_vector_store(documents: List[str], persist_directory: str = "vector_store"):
     """
     Create and populate a ChromaDB vector store with the provided documents.
-    
-    Args:
-        documents (List[str]): List of text chunks to store
-        persist_directory (str): Directory to persist the vector store
-    
-    Returns:
-        chromadb.Client: Configured ChromaDB client
     """
     # Initialize the embedding model
     model = SentenceTransformer('all-MiniLM-L6-v2')
     
-    # Initialize ChromaDB client
-    client = chromadb.Client(Settings(
-        persist_directory=persist_directory,
-        anonymized_telemetry=False
-    ))
+    # Initialize ChromaDB client with persistence
+    client = chromadb.PersistentClient(path=persist_directory)
     
-    # Create or get collection
-    collection = client.create_collection(
-        name="pdf_collection",
-        metadata={"hnsw:space": "cosine"}
-    )
+    try:
+        # Try to get existing collection first
+        collection = client.get_collection(name="pdf_collection")
+        print("Found existing collection")
+    except:
+        # Create new collection if it doesn't exist
+        collection = client.create_collection(
+            name="pdf_collection",
+            metadata={"hnsw:space": "cosine"}
+        )
+        print("Created new collection")
+    
+    # Extract text content from Document objects
+    texts = [doc.page_content for doc in documents]
     
     # Add documents to the collection
-    if documents:
+    if texts:
         collection.add(
-            documents=documents,
-            embeddings=model.encode(documents).tolist(),
-            ids=[f"doc_{i}" for i in range(len(documents))]
+            documents=texts,
+            embeddings=model.encode(texts).tolist(),
+            ids=[f"doc_{i}" for i in range(len(texts))]
         )
+        print(f"Added {len(texts)} documents to the collection")
     
     return client

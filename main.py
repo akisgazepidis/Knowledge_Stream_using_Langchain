@@ -8,13 +8,14 @@ def main():
     # Process all PDFs and get text chunks
     chunks = process_pdfs(files_directory)
 
-    print(chunks[0:3])  # Print first 3 chunks for verification
+    # print(chunks[0])  
+    # print(len(chunks)) 
     
-    # # Create and populate vector store
-    # vector_store = create_vector_store(
-    #     documents=chunks,
-    #     persist_directory=persist_directory
-    # )
+    # Create and populate vector store
+    vector_store = create_vector_store(
+        documents=chunks,
+        persist_directory=persist_directory
+    )
 
 if __name__ == '__main__':
     main()

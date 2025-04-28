@@ -1,5 +1,6 @@
 langchain
 langchain-community
-PyPdf2
+pypdf
 sentence-transformers
 chromadb
+tf-keras
