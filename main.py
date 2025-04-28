@@ -1,16 +1,20 @@
-# This is a sample Python script.
+from utils.utils import process_pdfs, create_vector_store
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+def main():
+    # Directory configurations
+    files_directory = "files"
+    persist_directory = "vector_store"
+    
+    # Process all PDFs and get text chunks
+    chunks = process_pdfs(files_directory)
 
+    print(chunks[0:3])  # Print first 3 chunks for verification
+    
+    # # Create and populate vector store
+    # vector_store = create_vector_store(
+    #     documents=chunks,
+    #     persist_directory=persist_directory
+    # )
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    main()

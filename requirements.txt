@@ -1,4 +1,5 @@
 langchain
+langchain-community
 PyPdf2
 sentence-transformers
 chromadb
