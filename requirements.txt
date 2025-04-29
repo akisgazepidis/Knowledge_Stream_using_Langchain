@@ -1,6 +1,10 @@
 langchain
 langchain-community
+langchain-core
+langchain-huggingface
 pypdf
 sentence-transformers
 chromadb
 tf-keras
+python-dotenv
+huggingface_hub

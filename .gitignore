@@ -4,3 +4,5 @@ __pycache__/
 files/**/*.pdf
 vector_store/**
 !vector_store/.gitkeep
+.env
+# Allow .env.example to be committed

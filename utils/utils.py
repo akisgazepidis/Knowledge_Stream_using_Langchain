@@ -3,6 +3,11 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFLoader
 from sentence_transformers import SentenceTransformer
 from chromadb.config import Settings
+from langchain.agents import AgentExecutor, Tool, initialize_agent
+from langchain_huggingface import HuggingFaceEndpoint
+from langchain.agents import AgentType
+from langchain.prompts import MessagesPlaceholder, ChatPromptTemplate
+from langchain.memory import ConversationBufferMemory
 import chromadb
 import os
 
@@ -89,3 +94,51 @@ def create_vector_store(documents: List[str], persist_directory: str = "vector_s
         print(f"Added {len(texts)} documents to the collection")
     
     return client
+
+def setup_agent(files_directory: str = "files", persist_directory: str = "vector_store"):
+    """
+    Set up a LangChain agent with PDF processing and vector storage tools using Hugging Face model.
+    
+    Args:
+        files_directory (str): Directory containing PDF files
+        persist_directory (str): Directory for vector store persistence
+    """
+    # Wrap tools in LangChain Tool objects
+    tools = [
+        Tool(
+            name="ProcessPDFs",
+            func=lambda _: process_pdfs(files_directory),
+            description=f"Process PDF documents from the {files_directory} directory and split them into chunks. This is the first step in the pipeline."
+        ),
+        Tool(
+            name="StoreVectors",
+            func=lambda chunks: create_vector_store(chunks, persist_directory),
+            description="Store the provided chunks as vector embeddings in ChromaDB. Use this after ProcessPDFs to complete the pipeline."
+        )
+    ]
+
+    # Initialize LLM using Hugging Face's Endpoint with specific task configuration
+    llm = HuggingFaceEndpoint(
+        repo_id="HuggingFaceH4/zephyr-7b-beta",
+        task="text-generation",
+        temperature=0.1,
+        max_new_tokens=512,
+        huggingfacehub_api_token=os.getenv("HUGGINGFACEHUB_API_TOKEN")
+    )
+
+    # Create memory with limited scope
+    memory = ConversationBufferMemory(
+        memory_key="chat_history",
+        return_messages=True,
+        output_key="output"  # More focused memory handling
+    )
+
+    # Initialize agent with specific configuration
+    return initialize_agent(
+        tools=tools,
+        llm=llm,
+        agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION,
+        memory=memory,
+        verbose=True,
+        max_iterations=2  # Limit iterations to prevent unnecessary operations
+    )

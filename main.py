@@ -1,15 +1,17 @@
 from utils.utils import process_pdfs, create_vector_store
+from dotenv import load_dotenv
+import os
+
+# Load environment variables
+load_dotenv()
 
 def main():
-    # Directory configurations
-    files_directory = "files"
-    persist_directory = "vector_store"
+    # Get directory configurations from environment variables
+    files_directory = os.getenv('FILES_DIRECTORY', 'files')  # fallback to 'files' if not set
+    persist_directory = os.getenv('VECTOR_STORE_DIRECTORY', 'vector_store')  # fallback to 'vector_store' if not set
     
     # Process all PDFs and get text chunks
     chunks = process_pdfs(files_directory)
-
-    # print(chunks[0])  
-    # print(len(chunks)) 
     
     # Create and populate vector store
     vector_store = create_vector_store(
