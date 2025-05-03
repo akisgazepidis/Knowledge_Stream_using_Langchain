@@ -117,20 +117,21 @@ def setup_agent(files_directory: str = "files", persist_directory: str = "vector
         )
     ]
 
-    # Initialize LLM using Hugging Face's Endpoint with specific task configuration
+    # Initialize LLM using Hugging Face's Endpoint
     llm = HuggingFaceEndpoint(
         repo_id="HuggingFaceH4/zephyr-7b-beta",
         task="text-generation",
         temperature=0.1,
         max_new_tokens=512,
+        do_sample=False,  # Moved from model_kwargs to direct parameter
         huggingfacehub_api_token=os.getenv("HUGGINGFACEHUB_API_TOKEN")
     )
 
-    # Create memory with limited scope
+    # Create memory
     memory = ConversationBufferMemory(
         memory_key="chat_history",
         return_messages=True,
-        output_key="output"  # More focused memory handling
+        output_key="output"
     )
 
     # Initialize agent with specific configuration
