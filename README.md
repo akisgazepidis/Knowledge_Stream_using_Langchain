@@ -1,26 +1,27 @@
-# PDF to Vector Database
+# Knowledge Stream using LangChain
 
-A simple pipeline for converting PDF documents into searchable vector embeddings using LangChain and ChromaDB.
+An intelligent, real-time knowledge ingestion and retrieval pipeline built with **LangChain**, designed to process, chunk, embed, and query streaming data sources efficiently.
 
-## Workflow
-1. PDF files are loaded from the `files/` directory
-2. Text is extracted and split into chunks
-3. Chunks are converted to vectors using sentence-transformers
-4. Vectors are stored in a ChromaDB database
+## 🚀 Key Features
 
-## Project Structure
-```
-.
-├── files/          # Place your PDFs here
-├── scripts/        # Utility scripts for querying
-├── utils/          # Core processing functions
-├── vector_store/   # ChromaDB storage (generated)
-├── main.py         # Main processing pipeline
-└── requirements.txt
-```
+* **Advanced Text Splitting & Chunking:** Implements semantic and recursive chunking strategies to optimize document context retention for downstream retrieval.
+* **Vector Store Integration:** Seamlessly connects with high-performance vector databases for fast similarity search and embedding storage.
+* **Retrieval-Augmented Generation (RAG):** Integrates prompt engineering and LLM orchestration to answer queries backed by ingested knowledge bases.
+* **Modular Pipeline Architecture:** Cleanly decouples document loaders, embedding generators, vector storage, and generation chains.
 
-## Components
-- `main.py`: Executes the PDF processing pipeline
-- `utils/utils.py`: Contains core functions for PDF processing and vector storage
-- `scripts/query_embedding.py`: Tools for querying the vector database
-- `requirements.txt`: Project dependencies
+## 🛠️ Tech Stack
+
+* **Orchestration:** LangChain
+* **Language:** Python
+* **Embeddings & LLMs:** OpenAI / Google Gemini (configurable)
+* **Vector Storage:** Chroma / FAISS
+
+## 📁 Project Structure
+
+```text
+Knowledge_Stream_using_Langchain/
+├── data/           # Raw and processed documents
+├── src/            # Core pipeline logic (ingestion, chunking, retrieval)
+├── notebooks/      # Exploratory data analysis and prototyping
+├── main.py         # Pipeline entry point
+└── requirements.txt # Project dependencies
